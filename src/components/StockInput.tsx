@@ -24,7 +24,9 @@ export default function StockInput({
         placeholder="Введите количество"
         placeholderTextColor="#8A847C"
         textAlignVertical="center"
-        className="mt-2 h-12 rounded-xl border border-[#D8D2C9] bg-white px-4 py-0 text-base leading-5 text-[#171512]"
+        className={`mt-2 h-12 rounded-xl border bg-white px-4 py-0 text-base leading-5 text-[#171512] ${
+          error ? "border-[#C6462F]" : "border-[#D8D2C9]"
+        }`}
       />
 
       {error && <Text className="mt-2 text-sm text-[#C6462F]">{error}</Text>}

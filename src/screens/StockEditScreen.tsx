@@ -8,6 +8,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useEffect } from "react";
 import {
+  ActivityIndicator,
   Keyboard,
   KeyboardAvoidingView,
   Pressable,
@@ -118,9 +119,18 @@ export default function StockListEditScreen({ route, navigation }: Props) {
                 canSubmit ? "bg-[#C6462F]" : "bg-[#D8D2C9]"
               }`}
             >
-              <Text className="text-center text-base font-semibold text-white">
-                {isUpdating ? "Сохраняем..." : "Сохранить"}
-              </Text>
+              {isUpdating ? (
+                <View className="flex flex-row items-center justify-center">
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                  <Text className="ml-2 text-base text-center font-semibold text-white">
+                    Сохранение...
+                  </Text>
+                </View>
+              ) : (
+                <Text className="text-base text-center font-semibold text-white">
+                  Сохранить
+                </Text>
+              )}
             </Pressable>
 
             {updateError && (

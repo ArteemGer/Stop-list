@@ -3,10 +3,10 @@ import { Pressable, Text, View } from "react-native";
 import { useMenuStore } from "@/store/menuStore";
 import type { StockFilter } from "@/types/menuItem";
 
-const filters: Array<{
+const filters: {
   value: StockFilter;
   label: string;
-}> = [
+}[] = [
   {
     value: "all",
     label: "Все",

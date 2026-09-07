@@ -1,9 +1,9 @@
 import type { StopReason } from "@/types/menuItem";
 
-export const stopReasons: Array<{
+export const stopReasons: {
   value: StopReason;
   label: string;
-}> = [
+}[] = [
   {
     value: "sold_out",
     label: "Товар закончился",

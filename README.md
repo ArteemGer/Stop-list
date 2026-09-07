@@ -1,56 +1,159 @@
-# Welcome to your Expo app 👋
+# Stop-list
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Тестовое задание на позицию Junior React Native Developer.
 
-## Get started
+Мобильное приложение для управления стоп-листом товаров в заведении.
 
-1. Install dependencies
+## Стек
 
-   ```bash
-   npm install
-   ```
+- React Native
+- Expo SDK 57
+- TypeScript
+- React Navigation
+- Zustand
+- NativeWind
+- React Native Reanimated
+- ESLint
 
-2. Start the app
+## Функциональность
 
-   ```bash
-   npx expo start
-   ```
+### Стоп-лист
 
-In the output, you'll find options to open the app in a
+- Отображение списка из 20 товаров
+- Категории товаров
+- Отображение текущего остатка
+- Автоматическое определение статуса:
+  - `0` — стоп
+  - `1–5` — мало
+  - `>5` — в наличии
+- Поиск по названию товара
+- Поиск без учёта регистра
+- Debounce поиска — 300 мс
+- Фильтрация:
+  - Все
+  - В продаже
+  - Стоп
+- Отображение количества найденных товаров
+- Состояния загрузки, ошибки и пустого результата
+- Повторная загрузка после ошибки
+- Плавное появление карточек при загрузке списка
+- Анимация нажатия на карточку
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Изменение остатка
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- Отдельный экран редактирования товара
+- Типизированная навигация между экранами
+- Ввод нового остатка от `0` до `999`
+- Валидация целого числа
+- Выбор причины изменения:
+  - Товар закончился
+  - Нет поставки
+  - Проблемы с качеством
+  - Другая причина
+- Кнопка сохранения недоступна при невалидных данных
+- Inline-отображение ошибок
+- Сохранение введённых данных при ошибке API
+- После успешного сохранения список обновляется автоматически
 
-## Get a fresh project
+## Архитектура
 
-When you're ready, run:
+Проект разделён на несколько основных частей:
 
-```bash
-npm run reset-project
+```text
+src/
+├── api/          # Работа с mock API
+├── components/   # Переиспользуемые UI-компоненты
+├── hooks/        # Переиспользуемые React hooks
+├── lib/          # Бизнес-логика, фильтрация и валидация
+├── navigation/   # React Navigation
+├── screens/      # Экраны приложения
+├── store/        # Состояние приложения и формы
+└── types/        # TypeScript типы
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Состояние списка и операции с товарами управляются через Zustand.
+Бизнес-логика фильтрации, определения статуса и валидации вынесена из UI-компонентов.
 
-### Other setup steps
+## Mock API
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Для имитации API используется локальный mock API.
 
-## Learn more
+Запросы имеют искусственную задержку и случайно могут завершаться ошибкой. Это позволяет проверить состояния загрузки, ошибки и повторной загрузки.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Запуск
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Установить зависимости:
 
-## Join the community
+```bash
+npm install
+```
 
-Join our community of developers creating universal apps.
+Запустить приложение:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+npx expo start
+```
+
+После запуска приложение можно открыть через Expo Go или Android Emulator.
+Используется Expo SDK 57.
+
+## Проверка
+
+Проверка TypeScript:
+
+```bash
+npx tsc --noEmit
+```
+
+Проверка ESLint:
+
+```bash
+npx expo lint
+```
+
+## Тестирование
+
+Проект проверялся на Android Emulator и на Iphone.
+
+Основные сценарии:
+
+- загрузка списка товаров;
+- поиск и debounce;
+- фильтрация по статусу;
+- переход к редактированию;
+- валидация остатка;
+- выбор причины изменения;
+- успешное сохранение;
+- обработка ошибки API.
+
+## Принятые решения
+
+- Для управления состоянием использован Zustand, так как состояние списка и формы необходимо сохранять независимо от UI-компонентов, при этом для такого небольшого приложения Redux был бы избыточен.
+- Для навигации использован React Navigation с типизированными параметрами экранов, чтобы безопасно передавать `itemId` между экранами.
+- Бизнес-логика фильтрации, определения статуса товара и валидации остатка вынесена в отдельные функции, чтобы не смешивать её с отображением.
+- Для имитации реального API создан локальный mock API с задержкой и случайными ошибками, что позволяет проверить loading и error-состояния.
+- Для UI используется NativeWind, чтобы сохранить единый стиль компонентов и не дублировать большое количество StyleSheet-описаний.
+- Для анимаций выбран React Native Reanimated, чтобы реализовать плавное появление карточек и обратную связь при нажатии без использования стандартного Animated API.
+
+## Если бы было больше времени
+
+- Ещё немного доработал бы визуальную часть интерфейса и состояния элементов.
+- Добавил бы дополнительные плавные анимации для переходов между состояниями и экранами.
+
+## Скриншоты
+
+### Стоп-лист
+
+<img src="./screenshots/stop-list.jpg" width="300" alt="Стоп-лист">
+
+### Поиск
+
+<img src="./screenshots/search.jpg" width="300" alt="Поиск">
+
+### Редактирование остатка
+
+<img src="./screenshots/edit-stock.jpg" width="300" alt="Редактирование остатка">
+
+### Валидация
+
+<img src="./screenshots/validation.jpg" width="300" alt="Валидация">

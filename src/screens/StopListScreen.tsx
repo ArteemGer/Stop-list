@@ -33,10 +33,10 @@ export default function StockListScreen() {
   const loadError = useMenuStore((state) => state.loadError);
   const loadItems = useMenuStore((state) => state.loadItems);
 
-  const searchQuery = useMenuStore((state) => state.debouncedSearchQuery);
+  const debouncedSearchQuery = useMenuStore((state) => state.debouncedSearchQuery);
   const statusFilter = useMenuStore((state) => state.statusFilter);
 
-  const filteredItems = filterMenuItems(items, searchQuery, statusFilter);
+  const filteredItems = filterMenuItems(items, debouncedSearchQuery, statusFilter);
   const isEmptyResult = filteredItems.length === 0;
 
   const navigation = useNavigation<StockListNavigationProp>();
@@ -86,9 +86,10 @@ export default function StockListScreen() {
             <FlatList
               data={filteredItems}
               keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
+              renderItem={({ item, index }) => (
                 <MenuItemCard
                   item={item}
+                  index={index}
                   onPress={() => {
                     navigation.navigate("StockListEdit", {
                       itemId: item.id,
