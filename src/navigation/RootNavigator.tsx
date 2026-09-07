@@ -19,13 +19,17 @@ export default function RootNavigator() {
         <Stack.Screen
           name="StockList"
           component={StockListScreen}
-          options={{ title: "Стоп-лист" }}
+          options={{
+            headerShown: false,
+          }}
         />
 
         <Stack.Screen
           name="StockListEdit"
           component={StockListEditScreen}
-          options={{ title: "Изменение остатка" }}
+          options={{
+            headerShown: false,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

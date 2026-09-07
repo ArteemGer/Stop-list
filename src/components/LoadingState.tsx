@@ -1,11 +1,18 @@
 import { ActivityIndicator, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoadingState() {
   return (
     <View className="flex-1 bg-[#F6F3EE] px-4">
-      <Text className="mb-4 mt-4 text-3xl font-bold text-[#171512]">
-        Стоп-лист
-      </Text>
+      <SafeAreaView edges={["top"]} className="bg-[#F6F3EE]">
+        <View className="border-b border-[#DDD8D0] px-4 pb-4 pt-2">
+          <Text className="text-3xl font-bold text-[#171512]">Стоп-лист</Text>
+
+          <Text className="mt-1 text-sm text-[#6F6A63]">
+            Управление остатками
+          </Text>
+        </View>
+      </SafeAreaView>
 
       <View className="items-center py-8">
         <ActivityIndicator size="large" color="#C6462F" />

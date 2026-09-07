@@ -1,5 +1,16 @@
+import type { RootStackParamList } from "@/navigation/RootNavigator";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useEffect } from "react";
-import { FlatList, Text, View } from "react-native";
+import {
+  FlatList,
+  Keyboard,
+  KeyboardAvoidingView,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import MenuItemCard from "@/components/MenuItemCard";
 import { useMenuStore } from "@/store/menuStore";
@@ -10,6 +21,11 @@ import LoadingState from "@/components/LoadingState";
 import SearchInput from "@/components/SearchInput";
 import StatusFilter from "@/components/StatusFilter";
 import { filterMenuItems } from "@/lib/menuFilters";
+
+type StockListNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "StockList"
+>;
 
 export default function StockListScreen() {
   const items = useMenuStore((state) => state.items);
@@ -22,6 +38,8 @@ export default function StockListScreen() {
 
   const filteredItems = filterMenuItems(items, searchQuery, statusFilter);
   const isEmptyResult = filteredItems.length === 0;
+
+  const navigation = useNavigation<StockListNavigationProp>();
 
   useEffect(() => {
     void loadItems();
@@ -36,41 +54,56 @@ export default function StockListScreen() {
   }
 
   return (
-    <View className="flex-1 bg-[#F6F3EE] px-4">
-      <Text className="mb-4 mt-4 text-3xl font-bold text-[#171512]">
-        Стоп-лист
-      </Text>
+    <KeyboardAvoidingView className="flex-1" behavior="padding">
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View className="flex-1 bg-[#F6F3EE] px-4">
+          <SafeAreaView edges={["top"]} className="bg-[#F6F3EE]">
+            <View className="border-b border-[#DDD8D0] px-4 pb-4 pt-2">
+              <Text className="text-3xl font-bold text-[#171512]">
+                Стоп-лист
+              </Text>
 
-      <SearchInput />
+              <Text className="mt-1 text-sm text-[#6F6A63]">
+                Управление остатками
+              </Text>
+            </View>
+          </SafeAreaView>
 
-      <StatusFilter />
+          <SearchInput />
 
-      <Text className="mb-3 text-sm text-[#6F6A63]">
-        Найдено: {filteredItems.length}
-      </Text>
+          <StatusFilter />
 
-      {isEmptyResult ? (
-        <EmptyState
-          title="Ничего не найдено"
-          description="Попробуйте изменить поисковый запрос"
-        />
-      ) : (
-        <FlatList
-          data={filteredItems}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <MenuItemCard
-              item={item}
-              onPress={() => {
-                console.log("Нажали:", item.id);
-              }}
+          <Text className="mb-3 text-sm text-[#6F6A63]">
+            Найдено: {filteredItems.length}
+          </Text>
+
+          {isEmptyResult ? (
+            <EmptyState
+              title="Ничего не найдено"
+              description="Попробуйте изменить поисковый запрос"
+            />
+          ) : (
+            <FlatList
+              data={filteredItems}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <MenuItemCard
+                  item={item}
+                  onPress={() => {
+                    navigation.navigate("StockListEdit", {
+                      itemId: item.id,
+                    });
+                  }}
+                />
+              )}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingBottom: 16 }}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="on-drag"
             />
           )}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 16 }}
-          keyboardShouldPersistTaps="handled"
-        />
-      )}
-    </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
